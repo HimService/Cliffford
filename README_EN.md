@@ -1,144 +1,142 @@
-# HimDocs-Builder
+# Cliffford Discord Bot
 
 [繁體中文](README.md) | [English](README_EN.md)
 
-# HimDocs-Builder
-
 ## Introduction
+Cliffford Discord Bot is a Discord bot developed using Python 3.11, leveraging the Google Gemini API to provide AI response capabilities, including text chat and image analysis. The bot supports slash commands (`/reset`, `/set`, `/unset`) to manage its behavior and uses the `console_rules.json` file for real-time rule checking to ensure responses comply with guidelines.
 
-HimDocs-Builder is a simple yet powerful documentation site generator built using HTML, CSS, and JavaScript. It supports a dynamic sidebar, table of contents (TOC), theme switching (light/dark mode), progress bar, and Markdown content rendering. Users can define the site structure and content by modifying the `pages.json` configuration file, with support for customizing footer copyright information.
+Bot features include:
+- Interacting with users via text and images (using the Gemini API).
+- Setting specific response channels (`/set` and `/unset`).
+- Resetting the bot's chat state (`/reset`).
+- Real-time rule checking to avoid violating rules defined in `console_rules.json`.
+- Logging all console output to the `bot.log` file.
 
-### Features
-- **Dynamic Sidebar**: Automatically generates a nested menu based on `pages.json`.
-- **Routing Support**: Updates the URL hash (e.g., `#page1`) when clicking menu items, supporting browser forward/back navigation.
-- **Theme Switching**: Supports light and dark modes with smooth transition effects.
-- **Markdown Rendering**: Uses `marked.js` to render `.md` files into HTML.
-- **Progress Bar**: Displays the scroll progress of the content area.
-- **Footer Animation**: The footer pops up when scrolling past the bottom of the content.
-- **Customizability**: Supports custom titles, footer copyright text, and menu icons.
-
-You can preview the latest version of HimDocs-Builder here:  
-https://himservice-docs.himserver.com/
-
-(I’m very sorry, but the website currently only has a Chinese README.md. However, you can download the project yourself, and we provide English versions of the files.)
+## Requirements
+- Python 3.11 or 3.12 (3.11 recommended)
+- Discord Bot Token x1
+- Google Gemini API Key x1  
+The Discord Bot Token and Gemini API Key are the most basic and essential requirements.
 
 ## Installation
 
-### Requirements
-- Python 3.9 or higher.
+### 1. Download the Project
 
-### Steps
-1. **Copy Project Files**
-   - Place the following files into your project directory:
-     - `index.html`: Main page structure.
-     - `style.css`: Stylesheet file.
-     - `script.js`: Core logic.
-     - `pages.json`: Site configuration and page settings.
-     - `content/`: Directory for storing Markdown files (e.g., `page1.md`).
-     - `server.py`: Server startup and port configuration.
-     - `assets/`: You can place your logo here, named as a `.png` file (e.g., `logo.png`).
-2. **Set Up Content**
-   - Create Markdown files in the `content/` directory, for example:
-     ```
-     # Welcome Page
-     This is my first documentation page.
-     ```
-     The filename should correspond to the `path` in `pages.json` (e.g., `page1.md`).
-3. **Configure Startup Port**
-   - Edit `server.py`:
-     ```bash
-     # Define server port
-     PORT = 8000
-     ```
-     Change `PORT = 8000` to your desired port.
-4. **Start the Server**
-   - Run the following in the project directory:
-     ```bash
-     py server.py
-     ```
-   - The console will display `Server running at http://localhost:8000`.
-   - Open `http://localhost:8000` in your browser.
+### 2. Navigate to the Project Folder
+```bash
+cd Cliffford
+```
+
+### 3. Install Dependencies
+Install the required packages:
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Settings
+- Configure the `setting.py` file with the following content:
+  ```python
+  BOT_TOKEN = "your_Discord_Bot_Token"
+  GEMINI_API_KEY = "your_Gemini_API_Key"
+  BOT_NAME = "Cliffford"  # AI's self-identification
+  BOT_VERSION = "Beta.v0.a1"  # Version (optional to modify)
+  developer = "your_name"  # Bot owner's name
+  developer_id = "your_Discord_ID"  # Developer/owner Discord ID
+  DEFAULT_CHANNEL = "channel_ID"  # Optional; if left blank, the bot responds in any channel unless /set is used
+  ```
+
+- Configure the `main.py` file with the following content:
+  ```
+  genai.configure(api_key=GEMINI_API_KEY)
+  text_model = genai.GenerativeModel('your_chosen_Gemini_model_name')
+  vision_model = genai.GenerativeModel('your_chosen_Gemini_model_name')
+  ```
+
+### 5. Edit Rule Files
+- Edit `bot_rules.json` (basic rules for AI interaction with users):
+  ```json
+  [
+    {
+      "role": "user",
+      "parts": "[Rule] Please respond to all messages in Chinese"
+    },
+    {
+      "role": "model",
+      "parts": "[Response Rule] I will respond to all messages in Chinese"
+    }
+  ]
+  ```
+- Edit `console_rules.json` (for real-time rules):
+  ```json
+  [
+    {
+      "rule": "Avoid using rude or offensive language",
+      "action": "Please use friendly language, or I cannot respond"
+    }
+  ]
+  ```
 
 ## Usage
 
-### Navigating the Site
-- **Homepage**: Open `http://localhost:8000` to load the first page with a `path` defined in `pages.json` by default.
-- **Switch Pages**: Click sidebar menu items to update the URL (e.g., `#page2`) and display the corresponding Markdown file in the content area.
-- **Theme Switching**: Click the `🌙` (dark mode) or `☀️` (light mode) button in the top-right corner.
-- **Search**: Enter keywords in the search bar to filter sidebar menu items.
-- **Footer**: Scroll past the bottom of the content to trigger the footer pop-up.
-
-### Example Markdown Content
-In `content/page1.md`:
-```
-# Page One
-This is my documentation content.
-
-## Subsection
-- Item 1
-- Item 2
+### 1. Start the Bot
+Run the following in the project folder:
+```bash
+python main.py
 ```
 
-After rendering:
-- Headings and lists are displayed correctly.
-- Links are rendered as clickable hyperlinks.
+## Interacting with the Bot on Discord
+- **Text Chat**: Send a text message directly in Discord, and the bot will respond in reply form.
+- **Image Analysis**: Upload an image with (optional) text description, and the bot will analyze and respond.
+- **Slash Commands**:
+  - `/reset`: Reset the bot's memory.
+  - `/set #channel`: Set the bot to respond only in the specified channel.
+  - `/unset`: Remove the channel restriction, allowing the bot to respond in all channels.
 
-## Customization Options
+### 3. Console Interaction
+- After starting, the console will prompt "Enter a question in the console (type 'exit' to quit)". You can input questions for the bot to respond to.
 
-### Customizing `pages.json`
-The configuration file is located at `pages.json`, with the following structure:
-```json
-{
-    "title": "My Documentation Site",
-    "footerCopyright": "© 2025 My Documentation Site",
-    "sidebar": [
-        {
-            "name": "Project A",
-            "path": "page1",
-            "icon": "🏠",
-            "children": [
-                {
-                    "name": "Module A-1",
-                    "path": "subpage1-1"
-                }
-            ]
-        },
-        {
-            "name": "Project B",
-            "path": "page2",
-            "icon": "🚀"
-        }
-    ],
-    "settings": {
-        "theme": "light",
-        "language": "zh",
-        "showIcons": true
+### 4. Logging
+- All console output is simultaneously logged to the `bot.log` file in the following format:
+  ```
+  Date Time - INFO - User input: your_question
+  Date Time - INFO - Checking against real-time rules
+  Date Time - INFO - Bot response: bot_response
+  ```
+
+## Configuration Details
+
+### `setting.py`
+- `BOT_TOKEN`: Obtain this from the Discord Developer Portal.
+- `GEMINI_API_KEY`: Obtain this from the Google Cloud Console.
+- `bot_name`: The bot's name (how the AI identifies itself).
+- `bot_version`: The bot's version number (optional to change).
+- `developer`: The bot owner's name.
+- `DEFAULT_CHANNEL`: Optional default response channel ID (leave blank for no default).
+
+### `console_rules.json`
+- Defines real-time rules in the following format:
+  ```json
+  [
+    {
+      "rule": "rule_description",
+      "action": "response_when_violated"
     }
-}
-```
-- **`title`**: Site title, displayed in the page title and header.
-- **`footerCopyright`**: Footer copyright text (only this part is editable; the suffix is fixed as `| Powered by HimService`).
-- **`sidebar`**: Defines the sidebar menu, supporting nested structures.
-  - `name`: Menu item name.
-  - `path`: Corresponding Markdown filename (without `.md`).
-  - `icon`: Optional icon (e.g., an emoji).
-  - `children`: Submenu items.
-- **`settings`**:
-  - `theme`: Default theme (`light` or `dark`).
-  - `language`: Language setting (currently only supports `zh`).
-  - `showIcons`: Whether to display icons (`true` or `false`).
+  ]
+  ```
+- Rules are checked in real-time with each message processed.
 
-### Customizing Styles
-Edit `style.css`:
-- **Theme Colors**: Modify `background` and `color` in `body.dark`.
-- **Link Colors**: Adjust `color` in `.content a` and `body.dark .content a`.
+## FAQ
 
-## Known Issues
+### 1. Slash Commands Not Working
+- Ensure `BOT_TOKEN` is correctly set and the bot has "Use Application Commands" permission.
+- Restart the program and check the console logs.
 
-## Development and Contribution
+### 2. Gemini API Errors
+- Verify that `GEMINI_API_KEY` is valid and check if the model name (e.g., `gemini-2.0-flash`) is correctly specified.
+- Ensure the API Key has permission to use the specified Gemini model and has remaining quota.
 
-### Reporting Issues
-If you encounter a bug or have a feature suggestion, please create an Issue on GitHub with a detailed description and reproduction steps.
+## Contribution
+If you have suggestions for new features or find bugs, please contact me.
 
 ## License
 Please read the `LICENSE` file.
